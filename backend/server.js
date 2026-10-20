@@ -1,16 +1,20 @@
-const express = require('express')
+require('dotenv').config(); // Load environment variables from .env
+const express = require('express');
+const connectMongo = require('./config/mongo'); // Import MongoDB connection function
+
 const app = express();
 
-// Permet de lire le json envoyé oar le front 
+// Parse JSON sent by the front-end
 app.use(express.json());
 
-//Test rout
-app.get('/', (req, res) => {
-    res.json({message: 'Page & Frame API is running'});
+// Connect to MongoDB
+connectMongo();
 
+// Test route
+app.get('/', (req, res) => {
+    res.json({ message: 'Page & Frame API is running' });
 });
 
 app.listen(5000, () => {
     console.log('server is running on port 5000');
-
 });
