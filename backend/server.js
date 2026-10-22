@@ -1,6 +1,6 @@
-require('dotenv').config(); // Load environment variables from .env
-const express = require('express');
-const connectMongo = require('./config/mongo'); // Import MongoDB connection function
+import 'dotenv/config'; // Load environment variables from .env
+import express from 'express';
+import connectMongo from './config/mongo.js'; // Import MongoDB connection function
 
 const app = express();
 
