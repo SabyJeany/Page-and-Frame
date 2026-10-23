@@ -1,6 +1,10 @@
 import 'dotenv/config'; // Load environment variables from .env
 import express from 'express';
 import connectMongo from './config/mongo.js'; // Import MongoDB connection function
+import { testMysql } from './config/mysql.js'; // Import MySQL test function
+
+// Test MySQL connection
+testMysql();
 
 const app = express();
 
