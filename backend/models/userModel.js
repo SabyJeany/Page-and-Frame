@@ -17,3 +17,10 @@ export async function createUser(pseudo, email, hashedPassword) {
 
     return result.insertId;
 }
+
+// Find a user by email, (prepared statement )
+export async function findUserByEmail(email ) {
+    const[rows] = await db.execute(
+        'SELECT id_utilisateur, pseudo , mot_de_passe, role FROM utilisateur WHERE email = ?', [email]);
+    return rows[0]; // Return the first row (or undefined if not found)
+}
