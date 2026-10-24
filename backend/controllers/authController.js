@@ -1,5 +1,5 @@
 import { hashPassword, comparePassword} from '../utils/password.js';
-import { createUser, findUserByEmail} from '../models/userModel.js';
+import { createUser, findUserByEmail, findUserById} from '../models/userModel.js';
 import {createToken} from '../utils/jwt.js';
 
 export async function register(req, res) {
@@ -57,6 +57,29 @@ export async function login(req, res) {
         return res.status(200).json({ token });
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+}
+export async function me(req, res) {
+    try {
+        // Get the user from the database using the id stored in the token
+        const user = await findUserById(req.user.id);
+
+        // No user found with this id: send a 404 error 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        // Success: send only the public data, with clear names for the front 
+        return res.status(200).json({
+            id: user.id_utilisateur,
+            username: user.pseudo,
+            avatar: user.avatar
+        });
+    } catch (error) {
+        // Unexpected error e.g. database down): log it on the server
+        console.error(error);
+        // Send a generic error message, withouth revealing technical details
         return res.status(500).json({ message: 'Server error' });
     }
 }

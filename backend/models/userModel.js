@@ -24,3 +24,9 @@ export async function findUserByEmail(email ) {
         'SELECT id_utilisateur, pseudo , mot_de_passe, role FROM utilisateur WHERE email = ?', [email]);
     return rows[0]; // Return the first row (or undefined if not found)
 }
+// Find a user by id, without the the password
+export async function findUserById(id) {
+    const[rows] = await db.execute(
+        'SELECT id_utilisateur, pseudo ,avatar FROM utilisateur WHERE id_utilisateur = ?', [id]);
+    return rows[0]; // Return the first row (or undefined if not found)
+}
