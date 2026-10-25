@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { search } from '../controllers/filmController.js';
+import { search, getById } from '../controllers/filmController.js';
 
 /**
  * Router for all film routes.
@@ -9,5 +9,6 @@ import { search } from '../controllers/filmController.js';
 const router = Router();
 
 router.get('/search', search);
+router.get('/:id', getById);
 
 export default router;

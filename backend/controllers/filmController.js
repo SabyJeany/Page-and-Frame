@@ -1,5 +1,23 @@
-// Import the service that searches films (cache + TMDB)
-import { searchFilms } from '../services/tmdbService.js';
+import { searchFilms, getFilmById } from '../services/tmdbService.js'; // Import the service that searches films (cache + TMDB)
+
+export async function getById(req, res) {
+    const id = Number(req.params.id);
+
+    if (!Number .isInteger(id) || id <= 0) {
+        return res.status(400).json({ message: 'Identifiant invalide' });
+    }
+
+    try {
+        const film = await getFilmById(id);
+        if (!film) {
+            return res.status(404).json({ message: 'Film introuvable' });
+        }
+        res.json(film);
+    }   catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+}
 
 /**
  * Controller for GET /api/films/search?q=...
