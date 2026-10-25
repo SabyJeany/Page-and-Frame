@@ -108,3 +108,43 @@ console.log(`🌐 TMDB call: ${key}`);
     await setCache(key, 'tmdb', film);
     return film;
 }
+
+export async function getCollectionById(id) {
+    const key = `collection:${id}`;
+
+    const cached = await getCache(key);
+    if (cached) {
+        console.log(`⚡ Cache hit: ${key}`);
+        return cached;
+    }
+
+    console.log(`🌐 TMDB call: ${key}`);
+    const url = `${TMDB_URL}/collection/${id}?language=fr-FR`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${process.env.TMDB_READ_TOKEN}` }
+    });
+
+    if (response.status === 404) return null; // Collection not found
+    if (!response.ok) throw new Error (`TMDB error ${response.status}`);
+    
+    const data = await response.json();
+
+    const collection = {
+        id: data.id,
+        name: data.name,
+        overview: data.overview,
+        poster: data.poster_path ? `https://image.tmdb.org/t/p/w342${data.poster_path}` : null,
+        films: data.parts
+            //.sort by release date (films without a date go last)
+            .sort((a, b) => (a.release_date || '9999').localeCompare(b.release_date || '9999'))
+            .map(film => ({
+                tmdbId: film.id,
+                title: film.title,
+                year: film.release_date ? film.release_date.slice(0, 4) : null,
+                poster: film.poster_path ? `https://image.tmdb.org/t/p/w342${film.poster_path}` : null
+            }))
+    };
+    await setCache(key, 'tmdb', collection);
+    return collection;
+}
+            
