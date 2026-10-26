@@ -5,6 +5,7 @@ import { testMysql } from './config/mysql.js'; // Import MySQL test function
 import cors from 'cors'; // Import CORS middleware to allow cross-origin requests
 import authRoutes from './routes/auth.routes.js'; // Import authentication routes
 import filmRoutes from './routes/films.routes.js'; // Import film routes
+import personRoutes from './routes/persons.routes.js';
 
 // Test MySQL connection
 testMysql();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/auth', authRoutes); // Use the auth routes for /api/auth endpoints
 app.use('/api/films', filmRoutes); // Use the film routes for /api/films endpoints
+app.use('/api/persons', personRoutes);
 // Connect to MongoDB
 connectMongo();
 

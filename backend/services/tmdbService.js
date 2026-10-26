@@ -184,3 +184,61 @@ export async function getRecommendationsById(id) {
     await setCache(key, 'tmdb', fims);
     return fims;
 }
+
+/**
+ * Gets a person (actor or director) with their filmography (cache first).
+ *
+ * @param {number} id - The TMDB id of the person
+ * @returns {Promise<Object|null>} The person, or null if not found
+ */
+export async function getPersonById(id) {
+    const key = `person:${id}`;
+
+    const cached = await getCache(key);
+    if (cached) {
+        console.log(`⚡ Cache hit: ${key}`);
+        return cached;
+    }
+
+    console.log(`🌐 TMDB call: ${key}`);
+    const url = `${TMDB_URL}/person/${id}?language=fr-FR&append_to_response=movie_credits`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${process.env.TMDB_READ_TOKEN}` }
+    });
+
+    if (response.status === 404) return null; // Person not found
+    if (!response.ok) throw new Error(`TMDB error ${response.status}`);
+
+    const data = await response.json();
+
+    // Turns a TMDB film into a simple object for the front
+    const toFilm = (film) => ({
+        tmdbId: film.id,
+        title: film.title,
+        year: film.release_date ? film.release_date.slice(0, 4) : null,
+        poster: film.poster_path ? `https://image.tmdb.org/t/p/w342${film.poster_path}` : null
+    });
+
+    // Sorts films from newest to oldest (films without a date go last)
+    const byDateDesc = (a, b) => (b.release_date || '0000').localeCompare(a.release_date || '0000');
+
+    const person = {
+        id: data.id,
+        name: data.name,
+        biography: data.biography,
+        birthday: data.birthday,
+        placeOfBirth: data.place_of_birth,
+        knownFor: data.known_for_department, // "Acting" or "Directing"
+        photo: data.profile_path ? `https://image.tmdb.org/t/p/w342${data.profile_path}` : null,
+        // Films where the person acted
+        actingFilms: data.movie_credits.cast.sort(byDateDesc).map(toFilm),
+        // Films the person directed
+        directedFilms: data.movie_credits.crew
+            .filter(film => film.job === 'Director')
+            .sort(byDateDesc)
+            .map(toFilm)
+    };
+
+    await setCache(key, 'tmdb', person);
+    return person;
+}
