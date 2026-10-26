@@ -6,6 +6,7 @@ import cors from 'cors'; // Import CORS middleware to allow cross-origin request
 import authRoutes from './routes/auth.routes.js'; // Import authentication routes
 import filmRoutes from './routes/films.routes.js'; // Import film routes
 import personRoutes from './routes/persons.routes.js';
+import bookRoutes from './routes/books.routes.js';
 
 // Test MySQL connection
 testMysql();
@@ -18,6 +19,7 @@ app.use(cors());
 app.use('/api/auth', authRoutes); // Use the auth routes for /api/auth endpoints
 app.use('/api/films', filmRoutes); // Use the film routes for /api/films endpoints
 app.use('/api/persons', personRoutes);
+app.use('/api/books', bookRoutes);
 // Connect to MongoDB
 connectMongo();
 
