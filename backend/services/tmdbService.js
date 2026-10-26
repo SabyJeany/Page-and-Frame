@@ -148,3 +148,39 @@ export async function getCollectionById(id) {
     return collection;
 }
             
+
+/**
+ * Gets fims recommended by TMDB for a given film (cache first).
+ * 
+ * @param {number} id - the TMDB idof the film 
+ * @returns {Promise<Array<Object>|null>} up to 10 films, or null if the film does not exist
+ */
+export async function getRecommendationsById(id) {
+    const key = `recommendations:${id}`;
+
+    const cached = await getCache(key);
+    if (cached) {
+        console.log(`⚡ Cache hit: ${key}`);
+        return cached;
+    }
+
+    console.log(`🌐 TMDB call: ${key}`);
+    const url = `${TMDB_URL}/movie/${id}/recommendations?language=fr-FR`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${process.env.TMDB_READ_TOKEN}` }
+    });
+
+    if (response.status === 404) return null; // Film not found
+    if (!response.ok) throw new Error (`TMDB error ${response.status}`);
+    
+    const data = await response.json();
+
+    const fims = data.results.slice(0, 10).map(film => ({
+        tmdbId: film.id,
+        title: film.title,
+        year: film.release_date ? film.release_date.slice(0, 4) : null,
+        poster: film.poster_path ? `https://image.tmdb.org/t/p/w342${film.poster_path}` : null
+    }));
+    await setCache(key, 'tmdb', fims);
+    return fims;
+}

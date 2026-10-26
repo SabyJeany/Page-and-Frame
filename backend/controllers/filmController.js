@@ -1,4 +1,4 @@
-import { searchFilms, getFilmById, getCollectionById } from '../services/tmdbService.js'; // Import the service that searches films (cache + TMDB)
+import { searchFilms, getFilmById, getCollectionById, getRecommendationsById } from '../services/tmdbService.js'; // Import the service that searches films (cache + TMDB)
 
 export async function getById(req, res) {
     const id = Number(req.params.id);
@@ -62,6 +62,25 @@ export async function getCollection(req, res) {
             return res.status(404).json({ message: 'Saga introuvable' });
         }
         res.json(collection);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+}
+
+export async function getRecommendations(req, res) {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({ message: 'Identifiant invalide' });
+    }
+
+    try {
+        const fims = await getRecommendationsById(id);
+        if (!fims) {
+            return res.status(404).json({ message: 'Film introuvable' });
+        }
+        res.json(fims);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur serveur' });
