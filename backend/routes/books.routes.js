@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { search } from '../controllers/bookController.js';
+import { search, getById } from '../controllers/bookController.js';
 
 /**
  * Router for all book routes.
@@ -8,5 +8,6 @@ import { search } from '../controllers/bookController.js';
 const router = Router();
 
 router.get('/search', search);
+router.get('/:id', getById);
 
 export default router;
