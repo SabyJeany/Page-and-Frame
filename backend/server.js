@@ -8,6 +8,7 @@ import filmRoutes from './routes/films.routes.js'; // Import film routes
 import personRoutes from './routes/persons.routes.js';
 import bookRoutes from './routes/books.routes.js';
 import reviewRoutes from './routes/reviews.routes.js';
+import listRoutes from './routes/lists.routes.js';
 
 // Test MySQL connection
 testMysql();
@@ -22,6 +23,7 @@ app.use('/api/films', filmRoutes); // Use the film routes for /api/films endpoin
 app.use('/api/persons', personRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/lists', listRoutes);
 // Connect to MongoDB
 connectMongo();
 
