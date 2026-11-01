@@ -135,7 +135,7 @@ export async function getAuthorById(id) {
     // Both requests run at the same time
     const [authorRes, worksRes] = await Promise.all([
         fetch(`${OPEN_LIBRARY_URL}/authors/${id}.json`, { headers }),
-        fetch(`${OPEN_LIBRARY_URL}/authors/${id}/works.json?limit=20`, { headers })
+        fetch(`${OPEN_LIBRARY_URL}/search.json?q=author_key:${id}&sort=editions&fields=key,title,first_publish_year,cover_i&limit=20`, { headers })
     ]);
 
     if (authorRes.status === 404) return null; // Author not found
@@ -154,10 +154,13 @@ export async function getAuthorById(id) {
         birthDate: data.birth_date || null,
         deathDate: data.death_date || null,
         photo: data.photos?.[0] > 0 ? `https://covers.openlibrary.org/a/id/${data.photos[0]}-M.jpg` : null,
-        works: worksData.entries.map(work => ({
+        works: (worksData.docs || [])
+        .filter(work => work.title) // Some works have no title, we skip them    
+        .map(work => ({
             id: work.key.replace('/works/', ''),
             title: work.title,
-            cover: work.covers?.[0] > 0 ? `https://covers.openlibrary.org/b/id/${work.covers[0]}-M.jpg` : null
+            year: work.first_publish_year || null,
+            cover: work.cover_i ? `https://covers.openlibrary.org/b/id/${work.cover_i}-M.jpg` : null
         }))
     };
 
