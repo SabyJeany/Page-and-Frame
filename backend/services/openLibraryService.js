@@ -113,3 +113,54 @@ export async function getBookById(id) {
     await setCache(key, 'openlibrary', book);
     return book;
 }
+
+/**
+ * Gets an author with their photo, biography and works (cache first).
+ *
+ * @param {string} id - The Open Library author id, e.g. "OL79034A"
+ * @returns {Promise<Object|null>} The author, or null if not found
+ */
+export async function getAuthorById(id) {
+    const key = `author:${id}`;
+
+    const cached = await getCache(key);
+    if (cached) {
+        console.log(`⚡ Cache hit: ${key}`);
+        return cached;
+    }
+
+    console.log(`📚 Open Library call: ${key}`);
+    const headers = { 'User-Agent': 'PageAndFrame/1.0 (student project)' };
+
+    // Both requests run at the same time
+    const [authorRes, worksRes] = await Promise.all([
+        fetch(`${OPEN_LIBRARY_URL}/authors/${id}.json`, { headers }),
+        fetch(`${OPEN_LIBRARY_URL}/authors/${id}/works.json?limit=20`, { headers })
+    ]);
+
+    if (authorRes.status === 404) return null; // Author not found
+    if (!authorRes.ok) throw new Error(`Open Library error ${authorRes.status}`);
+
+    const data = await authorRes.json();
+    const worksData = worksRes.ok ? await worksRes.json() : { entries: [] };
+
+    // The bio is sometimes a string, sometimes an object { value: "..." }
+    const bio = typeof data.bio === 'string' ? data.bio : data.bio?.value || null;
+
+    const author = {
+        id,
+        name: data.name,
+        bio,
+        birthDate: data.birth_date || null,
+        deathDate: data.death_date || null,
+        photo: data.photos?.[0] > 0 ? `https://covers.openlibrary.org/a/id/${data.photos[0]}-M.jpg` : null,
+        works: worksData.entries.map(work => ({
+            id: work.key.replace('/works/', ''),
+            title: work.title,
+            cover: work.covers?.[0] > 0 ? `https://covers.openlibrary.org/b/id/${work.covers[0]}-M.jpg` : null
+        }))
+    };
+
+    await setCache(key, 'openlibrary', author);
+    return author;
+}

@@ -9,6 +9,7 @@ import personRoutes from './routes/persons.routes.js';
 import bookRoutes from './routes/books.routes.js';
 import reviewRoutes from './routes/reviews.routes.js';
 import listRoutes from './routes/lists.routes.js';
+import authorsRoutes from './routes/authors.routes.js'; // Import authors routes
 
 // Test MySQL connection
 testMysql();
@@ -24,6 +25,7 @@ app.use('/api/persons', personRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/lists', listRoutes);
+app.use('/api/authors', authorsRoutes);
 // Connect to MongoDB
 connectMongo();
 
