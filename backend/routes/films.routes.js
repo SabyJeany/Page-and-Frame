@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { search, getById, getCollection, getRecommendations } from '../controllers/filmController.js';
+import { search, getById, getCollection, getRecommendations, getOrigin } from '../controllers/filmController.js';
 
 /**
  * Router for all film routes.
@@ -12,4 +12,5 @@ router.get('/search', search);
 router.get('/collection/:id', getCollection);
 router.get('/:id/recommendations', getRecommendations);
 router.get('/:id', getById);
+router.get('/:id/origin', getOrigin);
 export default router;

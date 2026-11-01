@@ -1,4 +1,5 @@
 import { searchFilms, getFilmById, getCollectionById, getRecommendationsById } from '../services/tmdbService.js'; // Import the service that searches films (cache + TMDB)
+import { getFilmOrigin } from '../services/wikidataService.js';
 
 export async function getById(req, res) {
     const id = Number(req.params.id);
@@ -68,6 +69,42 @@ export async function getCollection(req, res) {
     }
 }
 
+/**
+ * Controller for GET /api/films/:id/origin
+ * Returns the book(s) or work(s) the film is based on.
+ *
+ * @param {Object} req - The request (the film id is in req.params.id)
+ * @param {Object} res - The response sent back to the front
+ * @returns {Promise<Object>} JSON with the film id, its title and its origins
+ */
+export async function getOrigin(req, res) {
+    // Read the id from the URL and convert it from text to a number
+    const id = Number(req.params.id);
+
+    // The id must be a positive integer, otherwise 400 (client error)
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({ message: 'Invalid identifier' });
+    }
+
+    try {
+        // Check that the film really exists on TMDB (cache first)
+        const film = await getFilmById(id);
+        // Unknown film: 404
+        if (!film) {
+            return res.status(404).json({ message: 'Film not found' });
+        }
+
+        // Find the origins of the film (Wikidata + Open Library)
+        const origins = await getFilmOrigin(id);
+
+        // Send the id, the title and the origins (empty list if original screenplay)
+        res.json({ tmdbId: id, title: film.title, origins });
+    } catch (error) {
+        // Unexpected error (Wikidata down...): log it, send a generic message
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
 export async function getRecommendations(req, res) {
     const id = Number(req.params.id);
 
@@ -76,11 +113,11 @@ export async function getRecommendations(req, res) {
     }
 
     try {
-        const fims = await getRecommendationsById(id);
-        if (!fims) {
+        const films = await getRecommendationsById(id);
+        if (!films) {
             return res.status(404).json({ message: 'Film introuvable' });
         }
-        res.json(fims);
+        res.json(films);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur serveur' });

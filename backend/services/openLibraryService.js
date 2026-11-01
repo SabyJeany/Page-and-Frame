@@ -8,7 +8,7 @@ const OPEN_LIBRARY_URL = 'https://openlibrary.org';
  * @param {Promise<Array<Object>>} Simplified books: id, titles, authors, year, cover
  */
 export async function searchBooks(query) {
-    const key = `book-search:¤{query.toLowerCase()}`;
+    const key = `book-search:${query.toLowerCase()}`;
 
     const cached = await getCache(key);
     if (cached) {
