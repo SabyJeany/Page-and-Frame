@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../services/api';
+import FilmOrigin from '../components/FilmOrigin';
 
 /**
  * Film page: shows the details of a film from GET /api/films/:id.
@@ -53,6 +54,8 @@ useEffect(() => {
         {/* Year only if known */}
         {film.year && <p className="text-gray-600">{film.year}</p>}
         <p className="mt-4">{film.overview}</p>
+        {/* "Based on" block: shows the source of the film, if any */}
+        <FilmOrigin tmdbId={id} />
       </section>
     </main>
   );
