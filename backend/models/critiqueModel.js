@@ -26,3 +26,33 @@ export async function findCritiquesByUser(idUtilisateur) {
     );
     return rows;
 }
+/**
+ * Returns the number of reviews and the average rating of a work (all users).
+ */
+export async function findStatsByOeuvre(type, idExterne) {
+    const [rows] = await db.execute(
+        `SELECT COUNT(*) AS total, ROUND(AVG(c.note), 1) AS moyenne
+         FROM critique c
+         JOIN oeuvre o ON o.id_oeuvre = c.id_oeuvre
+         WHERE o.type = ? AND o.id_externe = ?`,
+        [type, idExterne]
+    );
+    return rows[0];
+}
+
+/**
+ * Returns the reviews of a work, newest first, only from public profiles.
+ */
+export async function findCritiquesByOeuvre(type, idExterne) {
+    const [rows] = await db.execute(
+        `SELECT u.pseudo, u.avatar, c.note, c.commentaire, c.date_critique
+         FROM critique c
+         JOIN oeuvre o ON o.id_oeuvre = c.id_oeuvre
+         JOIN utilisateur u ON u.id_utilisateur = c.id_utilisateur
+         WHERE o.type = ? AND o.id_externe = ? AND u.profil_public = TRUE
+         ORDER BY c.date_critique DESC
+         LIMIT 50`,
+        [type, idExterne]
+    );
+    return rows;
+}

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { requireAuth } from '../middlewares/authJwt.js';
-import { rate, myReviews } from '../controllers/reviewController.js';
+import { rate, myReviews, getWorkReviews } from '../controllers/reviewController.js';
 
 /**
  * Router for reviews (ratings). Every route needs a valid JWT.
@@ -10,5 +10,6 @@ const router = Router();
 
 router.post('/', requireAuth, rate);
 router.get('/me', requireAuth, myReviews);
+router.get('/:type/:idExterne', getWorkReviews);
 
 export default router;

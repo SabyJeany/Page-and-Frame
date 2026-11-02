@@ -1,7 +1,8 @@
 import { findOrCreateOeuvre } from '../models/oeuvreModel.js';
-import { upsertCritique, findCritiquesByUser } from '../models/critiqueModel.js';
+import { upsertCritique, findCritiquesByUser, findStatsByOeuvre, findCritiquesByOeuvre } from '../models/critiqueModel.js';
 import { getFilmById } from '../services/tmdbService.js';
 import { getBookById } from '../services/openLibraryService.js';
+
 
 /**
  * Controller for POST /api/reviews (protected)
@@ -54,5 +55,41 @@ export async function myReviews(req, res) {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur serveur' });
+    }
+}
+
+/**
+ * Controller for GET /api/reviews/:type/:idExterne (public)
+ * Returns the average rating, the number of reviews and the public reviews of a work.
+ */
+export async function getWorkReviews(req, res) {
+    const { type, idExterne } = req.params;
+
+    if (type !== 'film' && type !== 'livre') {
+        return res.status(400).json({ message: 'Invalid type (film or livre)' });
+    }
+    const idValide = type === 'film' ? /^[1-9]\d*$/.test(idExterne) : /^OL\d+W$/.test(idExterne);
+    if (!idValide) {
+        return res.status(400).json({ message: 'Invalid identifier' });
+    }
+
+    try {
+        // Both queries run at the same time
+        const [stats, reviews] = await Promise.all([
+            findStatsByOeuvre(type, idExterne),
+            findCritiquesByOeuvre(type, idExterne)
+        ]);
+
+        res.json({
+            type,
+            idExterne,
+            total: stats.total,
+            // MySQL returns the average as text ("4.5"): convert it to a number
+            moyenne: stats.moyenne !== null ? Number(stats.moyenne) : null,
+            reviews
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 }
