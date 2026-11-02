@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../services/api';
 import FilmOrigin from '../components/FilmOrigin';
+import CastList from '../components/CastList';
 
 /**
  * Film page: shows the details of a film from GET /api/films/:id.
@@ -56,6 +57,8 @@ useEffect(() => {
         <p className="mt-4">{film.overview}</p>
         {/* "Based on" block: shows the source of the film, if any */}
         <FilmOrigin tmdbId={id} />
+        {/* Cast list: shows the main actors, if any */}
+        <CastList directors={film.directors} cast={film.cast} />
       </section>
     </main>
   );
