@@ -5,6 +5,7 @@ import Search from './pages/Search';
 // Import the pages of the application
 import Register from './pages/Register';
 import Login from './pages/Login';
+import FilmDetails from './pages/FilmDetail';
 
 /**
  * Root component of the application.
@@ -34,6 +35,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         {/* Any other URL: "page not found" (must stay last) */}
         <Route path="*" element={<h1 className="p-8 text-2xl">Page not found</h1>} />
+        {/* Film details page */}
+        <Route path="/films/:id" element={<FilmDetails />} />
       </Routes>
     </BrowserRouter>
   );
