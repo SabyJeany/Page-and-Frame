@@ -1,5 +1,6 @@
 // Import the React Router components used for navigation between pages
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Search from './pages/Search';
 
 // Import the pages of the application
 import Register from './pages/Register';
@@ -25,8 +26,8 @@ export default function App() {
 
       {/* Shows the page that matches the current URL */}
       <Routes>
-        {/* Home page (temporary title for now) */}
-        <Route path="/" element={<h1 className="p-8 text-2xl">Home</h1>} />
+        {/* Search page */}
+        <Route path="/" element={<Search />} />
         {/* Sign-up page */}
         <Route path="/register" element={<Register />} />
         {/* Login page */}
