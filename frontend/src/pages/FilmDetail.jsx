@@ -16,12 +16,20 @@ export default function FilmDetail() {
   // Error message, if the request fails
   const [error, setError] = useState('');
 
-  // Load the film when the page opens, and again each time the id changes
-  useEffect(() => {
-    api.get(`/films/${id}`)
-      .then((response) => setFilm(response.data))
-      .catch(() => setError('Film not found.'));
-  }, [id]);
+ // Load the film when the page opens, and again each time the id changes
+useEffect(() => {
+  api.get(`/films/${id}`)
+    .then((response) => setFilm(response.data))
+    // 400 = invalid id, 404 = unknown film; anything else = server problem
+    .catch((err) => {
+      const status = err.response?.status;
+      setError(
+        status === 404 || status === 400
+          ? 'Film not found.'
+          : 'Server error, please try again.'
+      );
+    });
+}, [id]);
 
   // 1. Error: show the message (role="alert" is announced by screen readers)
   if (error) return <p role="alert" className="p-8">{error}</p>;
