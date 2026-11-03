@@ -1,5 +1,5 @@
 // Import the React Router components used for navigation between pages
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Import the pages of the application
 import Search from './pages/Search';
@@ -10,6 +10,7 @@ import PersonDetail from './pages/PersonDetail';
 import BookDetail from './pages/BookDetail';
 import AuthorDetail from './pages/AuthorDetail';
 import Profile from './pages/Profile';
+import Navbar from './components/Navbar';
 
 /**
  * Root component of the application.
@@ -21,13 +22,8 @@ export default function App() {
   return (
     // BrowserRouter watches the URL; needed for Routes, Link and useNavigate
     <BrowserRouter>
-      {/* Navigation bar, visible on every page (outside Routes) */}
-      <nav aria-label="Main navigation" className="flex gap-4 p-4 border-b">
-        {/* Link changes the page without reloading it (SPA) */}
-        <Link to="/">Page & Frame</Link>
-        <Link to="/register">Sign up</Link>
-        <Link to="/login">Log in</Link>
-      </nav>
+      {/* The navigation bar is visible on every page */}
+      <Navbar />
 
       {/* Shows the page that matches the current URL */}
       <Routes>
@@ -42,10 +38,7 @@ export default function App() {
         
         {/* Film details page, e.g. /films/438631 */}
         <Route path="/films/:id" element={<FilmDetail />} />
-
-        {/* Any other URL: "page not found" (kept last for readability) */}
-        <Route path="*" element={<h1 className="p-8 text-2xl">Page not found</h1>} />
-
+      
         {/* Person details page, e.g. /persons/525 */}
         <Route path="/persons/:id" element={<PersonDetail />} />
 
@@ -57,6 +50,9 @@ export default function App() {
 
         {/* User profile page, e.g. /profile/1 */}
         <Route path="/profile/" element={<Profile />} />
+
+        {/* Any other URL: "page not found" (kept last for readability) */}
+        <Route path="*" element={<h1 className="p-8 text-2xl">Page not found</h1>} />
       </Routes>
 
       {/* Footer, visible on every page: data sources (TMDB attribution is required) */}
