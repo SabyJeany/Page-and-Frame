@@ -4,6 +4,9 @@ import { getCache, setCache } from './cacheService.js';
 // Import the book search function from the Open Library service
 import { searchBooks } from './openLibraryService.js';
 
+// Import the film details function (to get the TMDB posters)
+import { getFilmById } from './tmdbService.js';
+
 // Wikidata address where SPARQL queries are sent
 const WIKIDATA_URL = 'https://query.wikidata.org/sparql';
 
@@ -115,4 +118,100 @@ export async function getFilmOrigin(tmdbId) {
     // 5. Save in the cache for next time, then return
     await setCache(key, 'wikidata', origins);
     return origins;
+}
+
+/**
+ * Finds the films adapted from the works of an author (Wikidata).
+ * Checks the cache first.
+ *
+ * @param {string} authorId - Open Library author id, e.g. "OL79034A"
+ * @returns {Promise<Array<Object>>} Films sorted by year (empty array if none)
+ * @throws {Error} If the id is invalid or if Wikidata answers with an error
+ */
+export async function getAuthorAdaptations(authorId) {
+  // Only an Open Library author id can go into the SPARQL query
+  if (!/^OL\d+A$/.test(authorId)) {
+    throw new Error('Invalid author id');
+  }
+
+  const key = `adaptations:${authorId}`;
+
+  // 1. Look in the MongoDB cache first
+  const cached = await getCache(key);
+  if (cached) {
+    console.log(`⚡ Cache hit: ${key}`);
+    return cached;
+  }
+
+  // 2. Not in cache: ask Wikidata
+  console.log(`🔎 Wikidata call: ${key}`);
+
+  /**
+   * - P648  = Open Library id → find the author
+   * - P50   = author → the works written by this author
+   * - P144  = based on → the films adapted from these works
+   * - P4947 = TMDB id → keep only films we can open in the app
+   * - P577  = release date (OPTIONAL)
+   */
+  const query = `
+    SELECT ?tmdbId ?filmLabel ?workLabel ?date WHERE {
+      ?author wdt:P648 "${authorId}" .
+      ?work wdt:P50 ?author .
+      ?film wdt:P144 ?work ;
+            wdt:P4947 ?tmdbId .
+      OPTIONAL { ?film wdt:P577 ?date . }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en" . }
+    }`;
+
+  const url = `${WIKIDATA_URL}?format=json&query=${encodeURIComponent(query)}`;
+  const response = await fetch(url, {
+    headers: { 'User-Agent': 'PageAndFrame/1.0 (student project)' }
+  });
+  if (!response.ok) throw new Error(`Wikidata error ${response.status}`);
+  const data = await response.json();
+
+  // 3. Group the rows by film (one film can have several dates or works)
+  const films = new Map();
+  for (const row of data.results.bindings) {
+    const tmdbId = Number(row.tmdbId.value);
+    const year = row.date ? Number(row.date.value.slice(0, 4)) : null;
+
+    if (!films.has(tmdbId)) {
+      films.set(tmdbId, {
+        tmdbId,
+        title: row.filmLabel?.value,
+        year,
+        poster: null,        // Wikidata has no posters: FilmCard shows a grey block
+        basedOn: []          // Titles of the works it comes from
+      });
+    }
+
+    const film = films.get(tmdbId);
+    // Keep the earliest release date (first cinema release)
+    if (year && (!film.year || year < film.year)) film.year = year;
+    // Add the work title only once
+    const work = row.workLabel?.value;
+    if (work && !film.basedOn.includes(work)) film.basedOn.push(work);
+  }
+
+  // 4. Sort by year, oldest first (films without a year at the end)
+  const adaptations = [...films.values()].sort(
+    (a, b) => (a.year ?? 9999) - (b.year ?? 9999)
+  );
+
+   // 5. Add the TMDB poster of each film (all at the same time, TMDB answers are cached too)
+  const withPosters = await Promise.all(adaptations.map(async (film) => {
+    try {
+      const details = await getFilmById(film.tmdbId);
+      // Use the TMDB title and poster when the film is found
+      return details ? { ...film, title: details.title, poster: details.poster } : film;
+    } catch {
+      //  TMDB is down for this film: keep it without a poster
+      return film;
+    }
+  }));
+
+  // 6. Save in the cache for next time, then return
+  await setCache(key, 'wikidata', withPosters);
+  return withPosters;
 }

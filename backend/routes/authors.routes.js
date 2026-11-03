@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAuthor } from '../controllers/authorController.js';
+import { getAuthor, getAdaptations } from '../controllers/authorController.js';
 
 /**
  * Router for authors (Open Library).
@@ -8,5 +8,6 @@ import { getAuthor } from '../controllers/authorController.js';
 const router = Router();
 
 router.get('/:id', getAuthor);
+router.get('/:id/adaptations', getAdaptations);
 
 export default router;

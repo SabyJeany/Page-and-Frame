@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import api from '../services/api';
 // Reusable card that shows one book (cover, title, year)
 import BookCard from '../components/BookCard';
+import AuthorAdaptations from '../components/AuthorAdaptations';
 
 /**
  * Author page: shows an Open Library author from GET /api/authors/:id.
@@ -87,6 +88,8 @@ export default function AuthorDetail() {
           </ul>
         </section>
       )}
+      {/* Films adapted from the author's works (shown only if there are some) */}
+      <AuthorAdaptations authorId={id} />
     </main>
   );
 }
