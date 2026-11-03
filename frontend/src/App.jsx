@@ -9,6 +9,7 @@ import FilmDetail from './pages/FilmDetail';
 import PersonDetail from './pages/PersonDetail';
 import BookDetail from './pages/BookDetail';
 import AuthorDetail from './pages/AuthorDetail';
+import Profile from './pages/Profile';
 
 /**
  * Root component of the application.
@@ -50,9 +51,12 @@ export default function App() {
 
         {/* Book details page, e.g. /books/OL893414W */}
         <Route path="/books/:id" element={<BookDetail />} />
-        
+
         {/* Author details page, e.g. /authors/OL23919A */}
         <Route path="/authors/:id" element={<AuthorDetail />} />
+
+        {/* User profile page, e.g. /profile/1 */}
+        <Route path="/profile/" element={<Profile />} />
       </Routes>
 
       {/* Footer, visible on every page: data sources (TMDB attribution is required) */}

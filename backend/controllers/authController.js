@@ -74,7 +74,11 @@ export async function me(req, res) {
         return res.status(200).json({
             id: user.id_utilisateur,
             username: user.pseudo,
-            avatar: user.avatar
+            email: user.email,
+            avatar: user.avatar,
+            bio: user.bio,
+            // MySQL stores booleans as 0 or 1: convert to true or false
+            Profilepublic: user.profil_public === 1, // convert tinyint to boolean
         });
     } catch (error) {
         // Unexpected error e.g. database down): log it on the server

@@ -27,7 +27,7 @@ export async function findUserByEmail(email ) {
 // Find a user by id, without the the password
 export async function findUserById(id) {
     const[rows] = await db.execute(
-        'SELECT id_utilisateur, pseudo ,avatar FROM utilisateur WHERE id_utilisateur = ?', [id]);
+        'SELECT id_utilisateur, pseudo, avatar, bio, profil_public FROM utilisateur WHERE id_utilisateur = ?', [id]);
     return rows[0]; // Return the first row (or undefined if not found)
 }
 
