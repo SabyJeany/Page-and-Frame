@@ -38,7 +38,7 @@ export default function App() {
         
         {/* Film details page, e.g. /films/438631 */}
         <Route path="/films/:id" element={<FilmDetail />} />
-      
+
         {/* Person details page, e.g. /persons/525 */}
         <Route path="/persons/:id" element={<PersonDetail />} />
 
@@ -57,6 +57,7 @@ export default function App() {
 
       {/* Footer, visible on every page: data sources (TMDB attribution is required) */}
       <footer className="p-4 border-t text-sm text-gray-600">
+      <img src="/tmdb-logo.svg" alt="TMDB logo" className="h-4 w-auto mb-2" /> 
         <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
         <p>Book data from Open Library. Film origins from Wikidata and Wikipedia.</p>
       </footer>
