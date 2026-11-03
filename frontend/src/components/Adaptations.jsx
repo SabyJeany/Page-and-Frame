@@ -4,28 +4,29 @@ import api from '../services/api';
 import FilmCard from './FilmCard';
 
 /**
- * "Adapted for the screen" block: films adapted from the author's works
- * (GET /api/authors/:id/adaptations).
+ * "Adapted for the screen" block, reused on the author page and the book page.
+ * The parent gives the API path, so the same block works for both.
  *
  * @param {Object} props
- * @param {string} props.authorId - Open Library author id, e.g. "OL79034A"
+ * @param {string} props.path - API path, e.g. "/authors/OL79034A/adaptations"
+ *                              or "/books/OL893414W/adaptations"
  * @returns {JSX.Element|null} The film grid, a message, or nothing if no adaptation
  */
-export default function AuthorAdaptations({ authorId }) {
+export default function Adaptations({ path }) {
   // null = still loading, [] = no adaptation, [...] = films found
   const [films, setFilms] = useState(null);
   // True if the request failed (Wikidata down...), different from "no adaptation"
   const [error, setError] = useState(false);
 
-  // Load the adaptations when the block appears, and again if the author changes
+  // Load the adaptations when the block appears, and again if the path changes
   useEffect(() => {
-    // Reset: avoids showing the previous author's films for a moment
+    // Reset: avoids showing the previous films for a moment
     setFilms(null);
     setError(false);
-    api.get(`/authors/${authorId}/adaptations`)
+    api.get(path)
       .then((response) => setFilms(response.data.adaptations))
       .catch(() => setError(true));
-  }, [authorId]);
+  }, [path]);
 
   // 1. Request failed: calm message, the rest of the page still works
   if (error) return <p role="alert" className="mt-10 text-gray-600">Adaptations unavailable for now.</p>;

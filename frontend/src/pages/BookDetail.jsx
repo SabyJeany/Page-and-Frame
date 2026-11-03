@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import api from '../services/api';
 // Buttons to rate the work and add it to a list (reused on film and book pages)
 import WorkActions from '../components/WorkActions';
+import Adaptations from '../components/Adaptations';
 
 /**
  * Book page: shows the details of an Open Library work from GET /api/books/:id.
@@ -128,6 +129,8 @@ export default function BookDetail() {
           </table>
         </section>
       )}
+      {/* Films adapted from this book (shown only if there are some) */}
+      <Adaptations path={`/books/${id}/adaptations`} />
     </main>
   );
 }

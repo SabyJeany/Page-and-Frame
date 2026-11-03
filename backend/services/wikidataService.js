@@ -154,12 +154,13 @@ export async function getAuthorAdaptations(authorId) {
    * - P577  = release date (OPTIONAL)
    */
   const query = `
-    SELECT ?tmdbId ?filmLabel ?workLabel ?date WHERE {
+    SELECT ?tmdbId ?filmLabel ?workLabel ?date ?workEn WHERE {
       ?author wdt:P648 "${authorId}" .
       ?work wdt:P50 ?author .
       ?film wdt:P144 ?work ;
             wdt:P4947 ?tmdbId .
       OPTIONAL { ?film wdt:P577 ?date . }
+            OPTIONAL { ?work rdfs:label ?workEn . FILTER(LANG(?workEn) = "en") }
       SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en" . }
     }`;
 
@@ -182,7 +183,8 @@ export async function getAuthorAdaptations(authorId) {
         title: row.filmLabel?.value,
         year,
         poster: null,        // Wikidata has no posters: FilmCard shows a grey block
-        basedOn: []          // Titles of the works it comes from
+        basedOn: [],         // Titles of the works it comes from
+        basedOnEn: []
       });
     }
 
@@ -192,6 +194,9 @@ export async function getAuthorAdaptations(authorId) {
     // Add the work title only once
     const work = row.workLabel?.value;
     if (work && !film.basedOn.includes(work)) film.basedOn.push(work);
+         // English title of the work, if Wikidata has one
+    const workEn = row.workEn?.value;
+    if (workEn && !film.basedOnEn.includes(workEn)) film.basedOnEn.push(workEn);
   }
 
   // 4. Sort by year, oldest first (films without a year at the end)
