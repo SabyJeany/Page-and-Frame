@@ -6,6 +6,7 @@ import Search from './pages/Search';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import FilmDetail from './pages/FilmDetail';
+import PersonDetail from './pages/PersonDetail';
 
 /**
  * Root component of the application.
@@ -37,6 +38,8 @@ export default function App() {
         <Route path="/films/:id" element={<FilmDetail />} />
         {/* Any other URL: "page not found" (kept last for readability) */}
         <Route path="*" element={<h1 className="p-8 text-2xl">Page not found</h1>} />
+        {/* Person details page, e.g. /persons/525 */}
+        <Route path="/persons/:id" element={<PersonDetail />} />
       </Routes>
 
       {/* Footer, visible on every page: data sources (TMDB attribution is required) */}
