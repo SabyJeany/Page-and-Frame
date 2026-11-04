@@ -150,7 +150,7 @@ export async function getCollectionById(id) {
             
 
 /**
- * Gets fims recommended by TMDB for a given film (cache first).
+ * Gets films recommended by TMDB for a given film (cache first).
  * 
  * @param {number} id - the TMDB idof the film 
  * @returns {Promise<Array<Object>|null>} up to 10 films, or null if the film does not exist
@@ -175,14 +175,14 @@ export async function getRecommendationsById(id) {
     
     const data = await response.json();
 
-    const fims = data.results.slice(0, 10).map(film => ({
+    const films = data.results.slice(0, 10).map(film => ({
         tmdbId: film.id,
         title: film.title,
         year: film.release_date ? film.release_date.slice(0, 4) : null,
         poster: film.poster_path ? `https://image.tmdb.org/t/p/w342${film.poster_path}` : null
     }));
-    await setCache(key, 'tmdb', fims);
-    return fims;
+    await setCache(key, 'tmdb', films);
+    return films;
 }
 
 /**
