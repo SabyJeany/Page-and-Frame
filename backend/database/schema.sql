@@ -20,11 +20,13 @@ CREATE TABLE utilisateur (
   role ENUM('user', 'admin') NOT NULL DEFAULT 'user'
 );
 
+-- Links our internal id to the external API id (TMDB for films, Open Library for books)
+-- One table for both films and books: reviews, list and adaaptations all point to this table
 CREATE TABLE oeuvre (
-  id_oeuvre INT AUTO_INCREMENT PRIMARY KEY,
-  type ENUM('film', 'livre') NOT NULL,
-  id_externe VARCHAR(50) NOT NULL,
-  UNIQUE (type, id_externe)
+  id_oeuvre INT AUTO_INCREMENT PRIMARY KEY, -- Internal id, created by MySQL
+  type ENUM('film', 'livre') NOT NULL, -- Kind of work: film or book
+  id_externe VARCHAR(50) NOT NULL, -- TMDB id (e.g. 438631) or Open Library id (e.g. 0L893414W)
+  UNIQUE (type, id_externe) -- The same work cannot be stored twice
 );
 
 CREATE TABLE critique (
