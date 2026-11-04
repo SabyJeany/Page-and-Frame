@@ -4,6 +4,7 @@ import api from '../services/api';
 import FilmOrigin from '../components/FilmOrigin';
 import CastList from '../components/CastList';
 import WorkActions from '../components/WorkActions';
+import FilmList from '../components/FilmList';
 
 /**
  * Film page: shows the details of a film from GET /api/films/:id.
@@ -60,6 +61,18 @@ useEffect(() => {
         <FilmOrigin tmdbId={id} />
         {/* Cast list: shows the main actors, if any */}
         <CastList directors={film.directors} cast={film.cast} />
+        {/* Saga: the list is in response.data.films; hide the current film */}
+{film.collectionId && (
+  <FilmList
+    title="In the same saga"
+    path={`/films/collection/${film.collectionId}`}
+    field="films"
+    excludeId={film.tmdbId}
+  />
+)}
+
+{/* Recommendations: the response itself is the list */}
+<FilmList title="You might also like" path={`/films/${film.tmdbId}/recommendations`} />
         {/* Actions: add to library, mark as watched, etc. */}
         <WorkActions type="film" idExterne={id} />
       </section>
