@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 // Tile that shows a film or a book from its id only
 import WorkTile from '../components/WorkTile';
+import ProfileStats from '../components/ProfileStats';
 
 // One block per list status, shown in this order
 // Written outside the component: it never changes, so it is not recreated at each render
@@ -123,6 +124,8 @@ export default function Profile() {
       <h1 className="text-3xl font-bold">{user.username}</h1>
       {/* My email: shown only here, on my own profile */}
       <p className="text-gray-600 mb-8">{user.email}</p>
+      {/* Profile stats: number of films and books in the list, number of ratings */}
+      <ProfileStats list={list} reviews={reviews} />
 
       {/* 1. Edit my profile */}
       <form onSubmit={saveProfile} className="flex flex-col gap-3 max-w-lg mb-12">
