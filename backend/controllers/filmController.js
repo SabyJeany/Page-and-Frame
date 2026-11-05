@@ -1,15 +1,26 @@
 import { searchFilms, getFilmById, getCollectionById, getRecommendationsById } from '../services/tmdbService.js'; // Import the service that searches films (cache + TMDB)
 import { getFilmOrigin } from '../services/wikidataService.js';
 
+/**
+ * Controller for GET /api/films/:id (public)
+ * Returns the full details of a film (title, poster, cast, directors...).
+ *
+ * @param {Object} req - The request of the client (the film id is in req.params.id)
+ * @param {Object} res - The response of the serveur
+ * @returns {Promise<Object>} The film, or an error
+ */
+
 export async function getById(req, res) {
+    // Read the id from the URL (text) and convert it to a number
     const id = Number(req.params.id);
 
-    if (!Number .isInteger(id) || id <= 0) {
+    // The id must be a positive integer, otherwise 400 (client error)
+    if (!Number .isInteger(id) || id <= 0) {                     // !Number.isInteger(id) means ‘if it is not an integer’
         return res.status(400).json({ message: 'Identifiant invalide' });
     }
 
     try {
-        const film = await getFilmById(id);
+        const film = await getFilmById(id); // Search the film in the cache TMDB if not in TMDB 
         if (!film) {
             return res.status(404).json({ message: 'Film introuvable' });
         }
@@ -31,7 +42,7 @@ export async function getById(req, res) {
 export async function search(req, res) {
     // Read "q" from the URL and remove spaces at the start and end
     // ?. avoids a crash if q is missing (returns undefined instead)
-    const q = req.query.q?.trim();
+    const q = req.query.q?.trim();              // Reads the search text from the URL and stores it in the constant q
 
     // Empty or missing search: send a 400 error (bad request)
     if (!q) {
@@ -51,6 +62,7 @@ export async function search(req, res) {
     }
 }
 export async function getCollection(req, res) {
+    // Read the saga id from the URL and convert it to a number
     const id = Number(req.params.id);
 
     if (!Number.isInteger(id) || id <= 0) {
@@ -82,7 +94,7 @@ export async function getOrigin(req, res) {
     const id = Number(req.params.id);
 
     // The id must be a positive integer, otherwise 400 (client error)
-    if (!Number.isInteger(id) || id <= 0) {
+    if (!Number.isInteger(id) || id <= 0) {                          // : !Number.isInteger(id) means ‘if it is not an integer’
         return res.status(400).json({ message: 'Invalid identifier' });
     }
 
@@ -106,9 +118,10 @@ export async function getOrigin(req, res) {
     }
 }
 export async function getRecommendations(req, res) {
+    // Read the id from the URL and convert it to a number
     const id = Number(req.params.id);
 
-    if (!Number.isInteger(id) || id <= 0) {
+    if (!Number.isInteger(id) || id <= 0) {   // : !Number.isInteger(id) means ‘if it is not an integer’
         return res.status(400).json({ message: 'Identifiant invalide' });
     }
 
