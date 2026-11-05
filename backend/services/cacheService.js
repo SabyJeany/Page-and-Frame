@@ -7,7 +7,7 @@ import Cache from '../models/Cache.js';
  * @param {string} key - Unique name of the request, e.g. "search:dune"
  * @returns {Promise<Object|null>} The cached API data, or null
  */
-export async function getCache(key) {
+export async function getCache(key) { // Searches for a piece of data in the MongoDB cache using its key
     // Find the entry with this key whose expiration date is still in the future
     const entry = await Cache.findOne({ key, expiresAt: { $gt: new Date() } });
     // If found, return only the API data; otherwise return null
@@ -24,11 +24,11 @@ export async function getCache(key) {
  * @returns {Promise<void>}
  */
 export async function setCache(key, source, data, ttlHours = 24) {
-    // Compute the expiration date: now + ttlHours converted to milliseconds
-    const expiresAt = new Date(Date.now() + ttlHours * 60 * 60 * 1000);
+    // calculates the cache expiry date: now, the validity period converted into milliseconds
+    const expiresAt = new Date(Date.now() + ttlHours * 60 * 60 * 1000); 
     // Update the entry with this key, or create it if it does not exist
     await Cache.findOneAndUpdate(
-        // Filter: which document to look for
+        // searches the cache for the document with that key, and updates it, or creates it if it does not yet exist.
         { key },
         // New values to save
         { key, source, data, createdAt: new Date(), expiresAt },

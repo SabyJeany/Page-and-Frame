@@ -48,8 +48,8 @@ export default function App() {
         {/* Author details page, e.g. /authors/OL23919A */}
         <Route path="/authors/:id" element={<AuthorDetail />} />
 
-        {/* User profile page, e.g. /profile/1 */}
-        <Route path="/profile/" element={<Profile />} />
+        {/* User profile page (the logged-in user, identified by the token) */}
+        <Route path="/profile" element={<Profile />} />
 
         {/* Any other URL: "page not found" (kept last for readability) */}
         <Route path="*" element={<h1 className="p-8 text-2xl">Page not found</h1>} />
