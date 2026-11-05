@@ -6,15 +6,15 @@ import axios from 'axios';
  * All requests start with baseURL, so api.post('/auth/login') calls .../api/auth/login.
  */
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'http://localhost:5000/api', //  Already been configured with the back-end’s address
 });
 
 // Before each request: add the token if the user is logged in
 api.interceptors.request.use((config) => {
   // Read the token saved at login
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token'); // The `token` constant reads the token stored in the browser’s localStorage at the time of login
   if (token) {
-    // Add it to the headers, in the format expected by requireAuth
+    // Adds the token to the request headers, so requireAuth can check it on the server
     config.headers.Authorization = `Bearer ${token}`;
   }
   // Let the request continue
