@@ -42,8 +42,9 @@ export async function getFilmOrigin(tmdbId) {
      * - P50 = author (OPTIONAL: kept even if unknown)
      * - French Wikipedia article (OPTIONAL: kept even if missing)
      * - Labels in French, otherwise in English
-     */
-    const query = ` // The query constant contains the question asked to Wikidata, written in SPARQL
+    */
+   // The query constant contains the question asked to Wikidata, written in SPARQL
+   const query = ` 
         SELECT ?book ?bookLabel ?authorLabel ?article WHERE {
             ?film wdt:P4947 "${tmdbId}" .
             ?film wdt:P144 ?book .
@@ -143,7 +144,9 @@ export async function getAuthorAdaptations(authorId) {
      * - P577 = release date (OPTIONAL)
      * - English title of the work (OPTIONAL), used to match Open Library titles
      */
-    const query = ` // The query constant contains the question asked to Wikidata, written in SPARQL
+
+    // The query constant contains the question asked to Wikidata, written in SPARQL
+    const query = `
         SELECT ?tmdbId ?filmLabel ?workLabel ?date ?workEn WHERE {
             ?author wdt:P648 "${authorId}" .
             ?work wdt:P50 ?author .
