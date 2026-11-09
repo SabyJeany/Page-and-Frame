@@ -3,6 +3,7 @@ import api from '../services/api';
 // Reusable card that shows one film (poster, title, year)
 import FilmCard from './FilmCard';
 
+
 /**
  * A titled block of film cards loaded from the API (saga, recommendations...).
  * The parent gives the title and the API path, so the same block is reused everywhere.
@@ -14,7 +15,7 @@ import FilmCard from './FilmCard';
  * @param {string|number} [props.excludeId] - A film to hide (the film of the current page)
  * @returns {JSX.Element|null} The film grid, a message, or nothing if the list is empty
  */
-export default function FilmList({ title, path, field, excludeId }) {
+export default function FilmList({ title, path, field, excludeId, currentId }) {
   // null = still loading, [] = nothing, [...] = films found
   const [films, setFilms] = useState(null);
   // True if the request failed
@@ -50,13 +51,21 @@ export default function FilmList({ title, path, field, excludeId }) {
       <h2 className="text-xl font-bold mb-4">{title}</h2>
 
       {/* Film grid: 2 columns on mobile, 3 on tablet, 4 on desktop */}
-      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {shown.map((film) => (
-          // One <li> per film; the TMDB id is unique
-          <li key={film.tmdbId}>
-            <FilmCard film={film} />
-          </li>
-        ))}
+      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
+        {shown.map((film) => {
+  // The film of the current page is framed and labelled "You are here"
+  const isCurrent = currentId !== undefined && String(film.tmdbId) === String(currentId);
+  return (
+    <li
+      key={film.tmdbId}
+      aria-current={isCurrent ? 'page' : undefined}
+      className={isCurrent ? 'ring-2 ring-black rounded p-1' : ''}
+    >
+      {isCurrent && <p className="text-xs font-semibold mb-1">You are here</p>}
+      <FilmCard film={film} />
+    </li>
+  );
+})}
       </ul>
     </section>
   );
