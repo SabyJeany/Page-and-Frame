@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- Landing page of Page & Frame, published with GitHub Pages -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Makes the page responsive on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page & Frame</title>
+  <style>
+    /* Reset: removes the default margins of the browser */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #F5EFE3; color: #17161C; line-height: 1.6; }
+
+    /* Header: stays at the top when scrolling (sticky) */
+    header { position: sticky; top: 0; background: #17161C; color: #F5EFE3; display: flex; justify-content: space-between; padding: 16px 5%; }
+    header a { color: #F5EFE3; margin-left: 24px; text-decoration: none; }
+
+    /* Intro section: large cover image with a dark layer so the text stays readable */
+    .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #F5EFE3; background: linear-gradient(rgba(23,22,28,0.7), rgba(23,22,28,0.7)), url(images/cover.png) center / cover; }
+    .hero h1 { font-size: 4rem; font-family: Georgia, serif; }
+    .hero p { font-size: 1.4rem; margin: 16px 0 32px; color: #E3A64A; }
+    .btn { background: #E3A64A; color: #17161C; padding: 14px 32px; border-radius: 8px; font-weight: bold; text-decoration: none; }
+
+    /* Sections: centered, with a maximum width */
+    section { padding: 80px 5%; max-width: 1100px; margin: 0 auto; }
+    h2 { font-family: Georgia, serif; font-size: 2.4rem; margin-bottom: 32px; text-align: center; }
+
+    /* Feature cards: grid that goes from 3 columns to 1 on mobile */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .card { background: #FBF8F1; border: 1px solid #E2D8C6; border-radius: 12px; overflow: hidden; }
+    .card img { width: 100%; height: 200px; object-fit: cover; }
+    .card h3, .card p { padding: 12px 20px; }
+
+    /* Links to GitHub, LinkedIn and Twitter */
+    .links { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 24px 0; }
+    .links a { border: 2px solid #17161C; padding: 10px 20px; border-radius: 8px; color: #17161C; text-decoration: none; }
+
+    /* YouTube video: keeps the 16:9 format */
+    iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }
+    footer { background: #17161C; color: #C9C2B6; text-align: center; padding: 24px; }
+  </style>
+</head>
+<body>
+  <!-- Header: project name and navigation to each section -->
+  <header>
+    <strong>Page &amp; Frame</strong>
+    <!-- href="#features" scrolls to the element with id="features" -->
+    <nav><a href="#features">Features</a><a href="#about">About</a></nav>
+  </header>
+
+  <main>
+    <!-- 1. Intro section: cover image, name, tagline and button to the app -->
+    <div class="hero">
+      <h1>Page &amp; Frame</h1>
+      <p>Every film has a story before the story.</p>
+      <a class="btn" href="[APP URL]">Try the app</a>
+    </div>
+
+    <!-- 2. Feature section: 3 key features, each with an image, a name and a description -->
+    <section id="features">
+      <h2>Key features</h2>
+      <div class="features">
+        <!-- Feature 1: films -->
+        <article class="card">
+          <!-- alt describes the image for screen readers (accessibility) -->
+          <img src="images/film.png" alt="Film page of Dune">
+          <h3>Find, rate and save films</h3>
+          <p>Search any film, see its cast, rate it and add it to your watchlist.</p>
+        </article>
+        <!-- Feature 2: link between a film and its book -->
+        <article class="card">
+          <img src="images/book.png" alt="Based on block linking Dune to its novel">
+          <h3>From the film to its book</h3>
+          <p>Each film shows the book it comes from, and each book shows its adaptations.</p>
+        </article>
+        <!-- Feature 3: profile -->
+        <article class="card">
+          <img src="images/profile.png" alt="User profile with statistics">
+          <h3>Your profile and stats</h3>
+          <p>Films watched, books read and your average rating, in one place.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. About section: my story, my links and the demo video -->
+    <section id="about">
+      <h2>About</h2>
+      <p>I love cinema and always want to know where a film comes from. I discovered that Prime Time was based on a real TV show, and that Nolan's The Odyssey comes from Homer. I built the tool that would have taught me that while watching.</p>
+      <p>Built alone in 7 weeks (September to November 2026) as my Portfolio Project at <a href="https://www.holbertonschool.com">Holberton School</a>.</p>
+      <div class="links">
+        <a href="https://github.com/SabyJeany/Page-and-Frame">GitHub repository</a>
+        <a href="https://github.com/SabyJeany">My GitHub</a>
+        <a href="[LINKEDIN URL]">LinkedIn</a>
+        <a href="[TWITTER URL]">Twitter</a>
+      </div>
+      <!-- Embedded YouTube demo video -->
+      <iframe src="https://www.youtube.com/embed/[VIDEO ID]" title="Demo video" allowfullscreen></iframe>
+    </section>
+  </main>
+
+  <!-- Footer: &amp; is how the & sign is written in HTML -->
+  <footer>2026 Jeany · Page &amp; Frame · Film data provided by TMDB</footer>
+</body>
+</html>
