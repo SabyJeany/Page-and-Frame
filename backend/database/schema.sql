@@ -17,7 +17,7 @@ CREATE TABLE utilisateur (
   avatar VARCHAR(255) NULL, -- Avatar Link:(https only, checked by the back-end) optional, can be NULL
   bio VARCHAR(500) NULL, -- Short bio, optional, can be NULL
   profil_public BOOLEAN NOT NULL DEFAULT TRUE, -- The user can choose to make their profile public or private, but default is public
-  role ENUM('user', 'admin') NOT NULL DEFAULT 'user' --ENUM is a list , 'user' by default
+  role ENUM('user', 'admin') NOT NULL DEFAULT 'user' -- ENUM is a list , 'user' by default
 );
 
 -- Links our internal id to the external API id (TMDB for films, Open Library for books)
