@@ -60,7 +60,7 @@ export default function FilmDetail() {
           <img
             src={film.poster}
             alt={`Poster of ${film.title}`}
-            className="w-full md:w-64 shrink-0 self-start rounded"
+            className="w-full md:w-80 shrink-0 self-start rounded"
           />
         )}
 
