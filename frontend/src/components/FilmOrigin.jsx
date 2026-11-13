@@ -38,33 +38,34 @@ export default function FilmOrigin({ tmdbId }) {
       <ul className="flex flex-col gap-3">
         {origins.map((origin) => (
           // key: unique id so React can track each item
-          <li key={origin.wikidataId}>
-            <p className="font-semibold">{origin.title}</p>
-
-            {/* Authors only if known, separated by commas */}
-            {origin.authors.length > 0 && (
-              <p className="text-gray-600">by {origin.authors.join(', ')}</p>
-            )}
-
-            {/* Link to the book page in the app, if found in Open Library */}
-            {origin.openLibrary && (
-              <Link to={`/books/${origin.openLibrary.id}`} className="underline">
-                See the book
-              </Link>
-            )}
-
-            {/* External link to Wikipedia, opened in a new tab */}
-            {origin.wikipedia && (
-              <a
-                href={origin.wikipedia}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline ml-4"
-              >
-                Read on Wikipedia (opens in a new tab)
-              </a>
-            )}
-          </li>
+          <li key={origin.wikidataId} className="flex gap-4">
+  {/* Book cover, only if found in Open Library */}
+  {origin.openLibrary?.cover && (
+    <img
+      src={origin.openLibrary.cover}
+      alt={`Cover of ${origin.title}`}
+      className="w-20 shrink-0 self-start rounded"
+    />
+  )}
+  <div>
+    <p className="text-xs font-semibold uppercase text-gray-500">Adapted from the book</p>
+    <p className="font-semibold">
+      {origin.title}
+      {origin.authors.length > 0 && ` — ${origin.authors.join(', ')}`}
+      {origin.openLibrary?.year && ` (${origin.openLibrary.year})`}
+    </p>
+    {origin.openLibrary && (
+      <Link to={`/books/${origin.openLibrary.id}`} className="underline text-sm">
+        See the book →
+      </Link>
+    )}
+    {origin.wikipedia && (
+      <a href={origin.wikipedia} target="_blank" rel="noopener noreferrer" className="underline text-sm ml-4">
+        Wikipedia
+      </a>
+    )}
+  </div>
+</li>
         ))}
       </ul>
     </section>
