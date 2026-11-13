@@ -6,7 +6,7 @@ import axios from 'axios';
  * All requests start with baseURL, so api.post('/auth/login') calls .../api/auth/login.
  */
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', //  Already been configured with the back-end’s address
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api', //  Already been configured with the back-end’s address
 });
 
 // Before each request: add the token if the user is logged in
